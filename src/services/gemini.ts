@@ -186,7 +186,7 @@ If same or different: "DIFFERENT"`;
   return { isCorrect: false };
 };
 
-export const getHint = async (emojis: string, correctAnswer: string, hintLevel: number): Promise<string> => {
+export const getHint = async (correctAnswer: string, hintLevel: number): Promise<string> => {
   const prompts = [
     `For the movie/book "${correctAnswer}", give a vague hint about its genre or when it was released. DO NOT mention any character names or specific plot points.`,
     `For the movie/book "${correctAnswer}", give a hint about the setting or theme, without mentioning any character names.`,

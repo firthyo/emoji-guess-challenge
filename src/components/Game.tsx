@@ -1,12 +1,10 @@
 import { useState, useCallback, useEffect } from 'react';
 import {
   Box,
-  Button,
-  Input,
+
   Text,
   VStack,
-  Heading,
-  HStack,
+
   useToast,
 } from '@chakra-ui/react';
 import { generateEmojiSequence, validateGuess, getHint } from '../services/gemini';
@@ -60,7 +58,7 @@ export function Game() {
     try {
       const { emojis, answer } = await generateEmojiSequence(gameState.difficulty, gameState.recentAnswers);
       console.log('Starting new round:', { emojis, answer });
-      
+
       setGameState(prev => {
         const newRecentAnswers = [answer, ...prev.recentAnswers].slice(0, 10);
         return {
@@ -90,13 +88,13 @@ export function Game() {
 
   const handleGuess = async () => {
     if (!guess.trim()) return;
-    
+
     setIsLoading(true);
     try {
       console.log('Checking guess:', { guess, answer: gameState.currentAnswer });
       const result = await validateGuess(guess, gameState.currentAnswer);
       console.log('Guess result:', result);
-      
+
       // Add guess to history
       setGameState(prev => ({
         ...prev,
@@ -110,7 +108,7 @@ export function Game() {
         } else if (gameState.hintsUsed >= 2) {
           pointsEarned = 1; // 1 point with 2-3 hints
         }
-        
+
         setGameState(prev => ({
           ...prev,
           score: prev.score + pointsEarned,
@@ -130,7 +128,7 @@ export function Game() {
           attemptsLeft: newAttemptsLeft,
           message: result.message || "Try again!"
         }));
-        
+
         if (newAttemptsLeft <= 1) {
           toast({
             title: 'Game Over!',
@@ -167,7 +165,7 @@ export function Game() {
 
     setIsLoading(true);
     try {
-      const newHint = await getHint(gameState.currentEmojis, gameState.currentAnswer, gameState.hintsUsed + 1);
+      const newHint = await getHint(gameState.currentAnswer, gameState.hintsUsed + 1);
       setGameState(prev => ({
         ...prev,
         hintsUsed: prev.hintsUsed + 1,
@@ -186,9 +184,9 @@ export function Game() {
   };
 
   return (
-    <Box 
-      w="100vw" 
-      h="100vh" 
+    <Box
+      w="100vw"
+      h="100vh"
       display="flex"
       alignItems="center"
       justifyContent="center"
@@ -198,11 +196,11 @@ export function Game() {
       top="0"
       left="0"
     >
-      <VStack 
+      <VStack
         spacing={{ base: 4, md: 8 }}
         align="center"
         p={{ base: 4, md: 8 }}
-   
+
         maxW={{ base: "95%", sm: "600px", lg: "800px" }}
         w="90%"
         maxH={{ base: "95vh", md: "90vh" }}
@@ -222,33 +220,33 @@ export function Game() {
         }}
       >
         <GameHeader score={gameState.score} />
-        
+
         <EmojiDisplay emojis={gameState.currentEmojis} />
-        
-        <AttemptsIndicator 
-          maxAttempts={MAX_ATTEMPTS} 
-          attemptsLeft={gameState.attemptsLeft} 
+
+        <AttemptsIndicator
+          maxAttempts={MAX_ATTEMPTS}
+          attemptsLeft={gameState.attemptsLeft}
         />
-        
+
         <GuessInput
           guess={guess}
           isLoading={isLoading}
           onGuessChange={setGuess}
           onGuessSubmit={handleGuess}
         />
-        
+
         <GameControls
           onRequestHint={requestHint}
           onNewGame={startNewRound}
           isLoading={isLoading}
           hintsUsed={gameState.hintsUsed}
         />
-        
+
         <GuessHistory previousGuesses={gameState.guessHistory} />
-        
+
         {gameState.hints.length > 0 && (
-          <VStack 
-            w="full" 
+          <VStack
+            w="full"
             spacing={3}
             border="2px solid"
             borderColor="brand.secondary"
