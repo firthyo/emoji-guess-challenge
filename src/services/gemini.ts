@@ -26,7 +26,7 @@ export const generateEmojiSequence = async (difficulty: string, recentAnswers: s
   try {
     const prompt = `You are generating a ${mediaType} title guessing game.
 1. Choose a well-known ${difficulty} ${mediaType} title that is NOT one of these: ${recentList}
-2. Create 3-5 emojis that represent that title
+2. Create 3-5 UNIQUE emojis that represent that title (DO NOT repeat any emoji)
 3. Return ONLY the emojis and title in this format:
 EMOJIS: [emojis here]
 TITLE: [title in lowercase]
@@ -34,6 +34,7 @@ TITLE: [title in lowercase]
 Rules:
 - Use well-known, family-friendly movies that most people would recognize
 - Choose clear, relevant emojis
+- NEVER repeat the same emoji in the sequence
 - Keep the emoji sequence simple (3-5 emojis) not more than 5
 - Return the title in lowercase
 - Avoid any sensitive or controversial content
@@ -54,6 +55,14 @@ Rules:
     
     const emojis = emojiMatch[1].trim();
     const title = titleMatch[1].trim().toLowerCase();
+
+    // Verify no duplicate emojis
+    const emojiArray = Array.from(emojis.replace(/\s+/g, ''));
+    const uniqueEmojis = new Set(emojiArray);
+    if (emojiArray.length !== uniqueEmojis.size) {
+      console.log('Got duplicate emojis, retrying...');
+      return generateEmojiSequence(difficulty, recentAnswers, retryCount);
+    }
     
     // Double check the title isn't in recent answers
     if (normalizedRecentAnswers.includes(title)) {
