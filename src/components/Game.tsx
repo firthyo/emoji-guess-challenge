@@ -104,15 +104,21 @@ export function Game() {
       }));
 
       if (result.isCorrect) {
-        const points = Math.max(3 - gameState.hintsUsed + gameState.attemptsLeft, 1);
+        let pointsEarned = 3; // Base points for no hints
+        if (gameState.hintsUsed === 1) {
+          pointsEarned = 2; // 2 points with 1 hint
+        } else if (gameState.hintsUsed >= 2) {
+          pointsEarned = 1; // 1 point with 2-3 hints
+        }
+        
         setGameState(prev => ({
           ...prev,
-          score: prev.score + points,
+          score: prev.score + pointsEarned,
           message: "Correct! 🎉"
         }));
         toast({
           title: 'Correct!',
-          description: `You earned ${points} points!`,
+          description: `You earned ${pointsEarned} points!`,
           status: 'success',
           duration: 3000,
         });
