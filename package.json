@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    
+    "deploy": "gh-pages -d dist --repo https://github.com/firthyo/emoji-guess-challenge",
     "lint": "eslint .",
     "preview": "vite preview"
   },
